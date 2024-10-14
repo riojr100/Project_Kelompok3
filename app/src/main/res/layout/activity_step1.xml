@@ -1,23 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/main_Step1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Step1">
 
+    <!-- Ilustrasi Gambar di Slide -->
+    <ImageView
+        android:id="@+id/onboarding_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="64dp"
+        android:contentDescription="Onboarding Image"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Judul -->
+    <TextView
+        android:id="@+id/onboarding_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manage your tasks"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Deskripsi -->
+    <TextView
+        android:id="@+id/onboarding_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You can easily manage all of your daily tasks in DoMe for free"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Tombol Next -->
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:text="NEXT"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-<!--    <Button-->
-<!--        android:id="@+id/back_button"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/back"-->
-<!--        />-->
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
