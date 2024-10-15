@@ -1,9 +1,11 @@
 package com.example.project_kelompok3
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Button
+import android.widget.NumberPicker
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +16,7 @@ class FocusModeActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var startPauseButton: Button
     private lateinit var stopButton: Button
+    private lateinit var editTimerButton: Button
     private var focusTimeInMillis: Long = 3600000 // Default 1 hour
     private lateinit var countDownTimer: CountDownTimer
     private var isTimerRunning: Boolean = false
@@ -28,6 +31,7 @@ class FocusModeActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         startPauseButton = findViewById(R.id.startPauseButton)
         stopButton = findViewById(R.id.stopButton)
+        editTimerButton = findViewById(R.id.editTimerButton)
 
         progressBar.max = 100 // Full progress
 
@@ -44,6 +48,11 @@ class FocusModeActivity : AppCompatActivity() {
 
         stopButton.setOnClickListener {
             stopTimer()
+        }
+
+        // Add the listener for the Edit Timer button
+        editTimerButton.setOnClickListener {
+            showEditTimerDialog()
         }
 
         updateCountDownText()
@@ -95,12 +104,55 @@ class FocusModeActivity : AppCompatActivity() {
     }
 
     private fun updateCountDownText() {
-        val minutes = (timeLeftInMillis / 1000) / 60
+        val hours = (timeLeftInMillis / 1000) / 3600
+        val minutes = ((timeLeftInMillis / 1000) % 3600) / 60
         val seconds = (timeLeftInMillis / 1000) % 60
-        val timeFormatted = String.format("%02d:%02d", minutes, seconds)
+        val timeFormatted: String
+
+        // If hours is greater than 0, include hours in the format
+        timeFormatted = if (hours > 0) {
+            String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            String.format("%02d:%02d", minutes, seconds)
+        }
+
         timerText.text = timeFormatted
     }
+
+    // Show the dialog to input hours, minutes, and seconds
+    private fun showEditTimerDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_timer, null)
+        val hourPicker = dialogView.findViewById<NumberPicker>(R.id.hourPicker)
+        val minutePicker = dialogView.findViewById<NumberPicker>(R.id.minutePicker)
+        val secondPicker = dialogView.findViewById<NumberPicker>(R.id.secondPicker)
+
+        // Set picker ranges
+        hourPicker.minValue = 0
+        hourPicker.maxValue = 23
+        minutePicker.minValue = 0
+        minutePicker.maxValue = 59
+        secondPicker.minValue = 0
+        secondPicker.maxValue = 59
+
+        // Create and show the dialog
+        AlertDialog.Builder(this)
+            .setTitle("Set Timer")
+            .setView(dialogView)
+            .setPositiveButton("Set") { _, _ ->
+                // Get the values from the NumberPickers
+                val hours = hourPicker.value
+                val minutes = minutePicker.value
+                val seconds = secondPicker.value
+
+                // Convert to milliseconds
+                focusTimeInMillis = ((hours * 3600) + (minutes * 60) + seconds) * 1000L
+                timeLeftInMillis = focusTimeInMillis
+
+                // Update the timer text and progress bar
+                updateCountDownText()
+                progressBar.progress = 100
+            }
+            .setNegativeButton("Cancel", null) // Dismiss the dialog if "Cancel" is pressed
+            .show()
+    }
 }
-
-
-

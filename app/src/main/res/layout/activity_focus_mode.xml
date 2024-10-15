@@ -4,6 +4,18 @@
     android:layout_height="match_parent"
     android:background="#121212">
 
+    <!-- Edit Timer Button -->
+    <Button
+        android:id="@+id/editTimerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:text="Edit Timer"
+        android:backgroundTint="#686de0"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="20dp"/>
+
     <!-- Circular ProgressBar -->
     <ProgressBar
         android:id="@+id/progressBar"
