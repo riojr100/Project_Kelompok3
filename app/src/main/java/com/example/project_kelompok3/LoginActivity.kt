@@ -51,12 +51,14 @@ class LoginActivity : AppCompatActivity() {
                     auth.signInWithEmailAndPassword(email, pass)
                         .addOnSuccessListener {
                             Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                            finish()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish() // Tutup LoginActivity
                         }
                         .addOnFailureListener {
                             Toast.makeText(this@LoginActivity, "Login Failed", Toast.LENGTH_SHORT).show()
                         }
+
                 } else {
                     loginPassword.error = "Password cannot be empty"
                 }
