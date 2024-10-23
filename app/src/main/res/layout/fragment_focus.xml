@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FocusFragment">
+    android:background="#121212">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Edit Timer Button -->
+    <Button
+        android:id="@+id/editTimerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:text="Edit Timer"
+        android:backgroundTint="#686de0"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Circular ProgressBar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:indeterminateOnly="false"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:max="100"
+        android:progress="100"/>
+
+    <!-- Time Display -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Focus Fragment" />
+        android:id="@+id/timerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="00:00"
+        android:textSize="36sp"
+        android:textColor="#ffffff" />
 
-</FrameLayout>
+    <!-- Start/Pause Button -->
+    <Button
+        android:id="@+id/startPauseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBar"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="Start Focusing"
+        android:backgroundTint="#686de0"
+        android:textColor="#ffffff"/>
+
+    <!-- Stop Button -->
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startPauseButton"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="Stop"
+        android:backgroundTint="#ff6666"
+        android:textColor="#ffffff"
+        android:visibility="gone"/> <!-- Initially hidden -->
+
+</RelativeLayout>
