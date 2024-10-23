@@ -51,7 +51,7 @@ class LoginActivity : AppCompatActivity() {
                     auth.signInWithEmailAndPassword(email, pass)
                         .addOnSuccessListener {
                             Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            val intent = Intent(this@LoginActivity, FragmentActivity::class.java)
                             startActivity(intent)
                             finish() // Tutup LoginActivity
                         }

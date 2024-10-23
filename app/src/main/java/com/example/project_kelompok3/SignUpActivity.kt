@@ -51,7 +51,9 @@ class SignUpActivity : AppCompatActivity() {
                     auth.createUserWithEmailAndPassword(user, pass).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this@SignUpActivity, "Signup Is Successful", Toast.LENGTH_SHORT).show()
+                            FirebaseAuth.getInstance().signOut()
                             startActivity(Intent(this@SignUpActivity, LoginActivity::class.java))
+                            finish()
                         } else {
                             Toast.makeText(this@SignUpActivity, "Signup Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -62,6 +64,7 @@ class SignUpActivity : AppCompatActivity() {
 
         loginRedirectText.setOnClickListener {
             startActivity(Intent(this@SignUpActivity, LoginActivity::class.java))
+            finish()
         }
     }
 }

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Priority"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp" />
+
+    <GridLayout
+        android:id="@+id/priorityGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:alignmentMode="alignBounds">
+
+        <!-- Priority buttons 1 to 10 -->
+        <Button
+            android:id="@+id/priority1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="1">
+        </Button>
+
+        <Button
+            android:id="@+id/priority2"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="2" />
+
+        <Button
+            android:id="@+id/priority3"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="3" />
+
+        <Button
+            android:id="@+id/priority4"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="4" />
+
+        <Button
+            android:id="@+id/priority5"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="5" />
+
+        <Button
+            android:id="@+id/priority6"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="6" />
+
+        <Button
+            android:id="@+id/priority7"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/priority8"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/priority9"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="9" />
+
+        <Button
+            android:id="@+id/priority10"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="10" />
+
+    </GridLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="16dp">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+</LinearLayout>
