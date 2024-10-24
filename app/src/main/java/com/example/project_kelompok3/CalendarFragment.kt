@@ -40,7 +40,7 @@ class CalendarFragment : Fragment() {
         // Initialize RecyclerView
         taskList = view.findViewById(R.id.recyclerViewTasks)
         taskList.layoutManager = LinearLayoutManager(context)
-        taskAdapter = TaskAdapter(tasks)
+        taskAdapter = TaskAdapter(tasks, HomeFragment())
         taskList.adapter = taskAdapter
 
         // Initialize calendar and navigation buttons
@@ -135,6 +135,7 @@ class CalendarFragment : Fragment() {
                 if (!documents.isEmpty) {
                     for (document in documents) {
                         val task = Task(
+                            taskId = document.getString("taskId") ?: "No ID",
                             title = document.getString("title") ?: "No Title",
                             dueDate = document.getString("dueDate") ?: "No Date"
                         )

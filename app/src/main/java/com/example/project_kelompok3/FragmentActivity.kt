@@ -44,10 +44,16 @@ class FragmentActivity : AppCompatActivity() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
 
 
+
+
+
         val homeFragment = HomeFragment()
         val calendarFragment = CalendarFragment()
         val focusFragment = FocusFragment()
         val profileFragment = ProfileFragment()
+
+        loadFragment(homeFragment)
+        bottomNavigation.selectedItemId = R.id.nav_home
 
         bottomNavigation.setOnItemSelectedListener { item ->
             var selectedFragment: Fragment? = null
@@ -212,9 +218,29 @@ class FragmentActivity : AppCompatActivity() {
                                     db.collection("users").document(userId).collection("tasks")
                                         .add(task)
                                         .addOnSuccessListener { documentReference ->
-                                            // Handle success
+                                            val taskId = documentReference.id
+                                            val updatedTask = hashMapOf(
+                                                "title" to title,
+                                                "description" to description,
+                                                "tag" to tag,
+                                                "priority" to priority,
+                                                "dueDate" to dateTime,
+                                                "taskId" to taskId
+                                            )
+                                            db.collection("users").document(userId).collection("tasks")
+                                                .document(taskId)
+                                                .set(updatedTask)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(this, "Task added with ID: $taskId", Toast.LENGTH_SHORT).show()
+                                                    bottomSheetDialog.dismiss()  // Close the dialog
+                                                    loadFragment(HomeFragment())
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this, "Error updating task with ID: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    Log.d("FragmentDebug", e.message.toString())
+                                                }
                                             Toast.makeText(this, "Task added with ID: ${documentReference.id}", Toast.LENGTH_SHORT).show()
-                                            bottomSheetDialog.dismiss()  // Close the dialog
+                                            bottomSheetDialog.dismiss()
                                         }
                                         .addOnFailureListener { e ->
                                             // Handle failure

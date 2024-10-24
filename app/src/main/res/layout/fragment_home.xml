@@ -7,6 +7,34 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     tools:context=".HomeFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/selection_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/grayish"
+        android:visibility="gone"
+        >
+        <ImageButton
+            android:id="@+id/delete_selection_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="Delete Button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@+id/exit_selection_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="Exit Selection Mode"
+            android:src="@drawable/cross_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Empty task image and message -->
     <ImageView

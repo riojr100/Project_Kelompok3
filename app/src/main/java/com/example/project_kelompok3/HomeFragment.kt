@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +21,12 @@ class HomeFragment : Fragment() {
     private lateinit var emptyTaskMessage: TextView
     private lateinit var taskList: RecyclerView
     private lateinit var taskAdapter: TaskAdapter
+
+    private lateinit var selectionDialog: ConstraintLayout
+
+    private lateinit var dialogDeleteButton: ImageButton
+    private lateinit var dialogExitButton: ImageButton
+
     private val tasks = mutableListOf<Task>()  // List of Task objects
 
     private val db = FirebaseFirestore.getInstance()
@@ -34,10 +42,14 @@ class HomeFragment : Fragment() {
         emptyTaskImage = view.findViewById(R.id.empty_task)
         emptyTaskMessage = view.findViewById(R.id.empty_task_msg)
         taskList = view.findViewById(R.id.task_list)
+        selectionDialog = view.findViewById(R.id.selection_dialog)
+
+        dialogDeleteButton = view.findViewById(R.id.delete_selection_button)
+        dialogExitButton = view.findViewById(R.id.exit_selection_button)
 
         // Set up RecyclerView
         taskList.layoutManager = LinearLayoutManager(context)
-        taskAdapter = TaskAdapter(tasks)
+        taskAdapter = TaskAdapter(tasks, this)
         taskList.adapter = taskAdapter
 
         // Get the current logged-in user
@@ -50,6 +62,15 @@ class HomeFragment : Fragment() {
             // Handle case where no user is logged in
             Log.e("HomeFragment", "No user is logged in")
             showEmptyViews()
+        }
+
+        dialogDeleteButton.setOnClickListener{
+            taskAdapter.deleteSelected()
+        }
+
+        dialogExitButton.setOnClickListener{
+            taskAdapter.clearSelections()
+            hideSelectionDialog()
         }
 
         return view
@@ -67,6 +88,7 @@ class HomeFragment : Fragment() {
                     hideEmptyViews()  // Hide empty task views
                     for (document in documents) {
                         val task = Task(
+                            taskId = document.getString("taskId")?: "No ID",
                             title = document.getString("title") ?: "No Title",
                             dueDate = document.getString("dueDate") ?: "No Date"
                         )
@@ -81,6 +103,13 @@ class HomeFragment : Fragment() {
                 Log.e("HomeFragment", "Error getting tasks: ", exception)
                 showEmptyViews()
             }
+    }
+
+    fun showSelectionDialog(){
+        selectionDialog.visibility = View.VISIBLE
+    }
+    fun hideSelectionDialog(){
+        selectionDialog.visibility = View.GONE
     }
 
     private fun hideEmptyViews() {
