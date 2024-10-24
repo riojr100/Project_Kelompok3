@@ -43,7 +43,7 @@ class HomeFragment : Fragment() {
         // Get the current logged-in user
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            val userId = currentUser.uid // Get the user ID of the currently logged-in user
+            val userId = currentUser.uid  // Get the user ID of the currently logged-in user
             // Fetch tasks for the current user from Firestore
             getTasksFromFirestore(userId)
         } else {
@@ -57,11 +57,14 @@ class HomeFragment : Fragment() {
 
     // Function to get tasks from Firestore for the current user
     private fun getTasksFromFirestore(userId: String) {
+        // Clear the task list to avoid duplicates
+        tasks.clear()
+
         db.collection("users").document(userId).collection("tasks")
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    hideEmptyViews() // Hide empty task views
+                    hideEmptyViews()  // Hide empty task views
                     for (document in documents) {
                         val task = Task(
                             title = document.getString("title") ?: "No Title",
@@ -69,9 +72,9 @@ class HomeFragment : Fragment() {
                         )
                         tasks.add(task)
                     }
-                    taskAdapter.notifyDataSetChanged() // Update RecyclerView
+                    taskAdapter.notifyDataSetChanged()  // Update RecyclerView
                 } else {
-                    showEmptyViews() // Show empty task views if no data
+                    showEmptyViews()  // Show empty task views if no data
                 }
             }
             .addOnFailureListener { exception ->
