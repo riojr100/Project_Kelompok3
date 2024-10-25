@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         } else {
             // Jika sudah login, langsung ke halaman utama
-            val intent = Intent(this, HomeFragment::class.java)
+            val intent = Intent(this, FragmentActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             3 -> Step4()  // Ke Step 4
             else -> {
                 // Setelah Step 4, arahkan ke HomeFragment atau halaman utama
-                val intent = Intent(this, HomeFragment::class.java)
+                val intent = Intent(this, FragmentActivity::class.java)
                 startActivity(intent)
                 finish()
                 return
