@@ -1,18 +1,27 @@
 package com.example.project_kelompok3
 
-import android.app.Dialog
+import ChangeNameDialogFragment
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.project_kelompok3.databinding.FragmentProfileBinding
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
 
@@ -35,40 +44,107 @@ class ProfileFragment : Fragment() {
         binding.taskDoneTextView.text = getString(R.string.task_done)
 
         // Set up menu navigation
-        setupMenu(sharedPreferences)
+        setupMenu()
 
         return binding.root
     }
+    private fun saveUserName(newName: String) {
+        val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("user_name", newName).apply()
+        binding.userNameTextView.text = newName
+    }
 
-    private fun setupMenu(sharedPreferences: SharedPreferences) {
+    private fun setupMenu() {
         binding.changeAccountName.setOnClickListener {
-            // Open change account name dialog
-            val dialog = ChangeNameDialogFragment { newName ->
-                saveUserName(sharedPreferences, newName)
+            val dialog = ChangeNameDialogFragment { newName: String ->
+                saveUserName(newName)
             }
             dialog.show(parentFragmentManager, "ChangeNameDialog")
         }
 
         binding.changeAccountPassword.setOnClickListener {
-            // Navigate to change password functionality
-            AlertDialog.Builder(requireContext())
-                .setTitle("Change Password")
-                .setMessage("This feature is under construction.")
-                .setPositiveButton("OK", null)
-                .show()
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_change_password, null)
+            val oldPasswordInput = dialogView.findViewById<EditText>(R.id.oldPasswordInput)
+            val newPasswordInput = dialogView.findViewById<EditText>(R.id.newPasswordInput)
+
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("Change Account Password")
+                .setView(dialogView)
+                .setCancelable(false)
+                .create()
+
+            dialogView.findViewById<View>(R.id.cancelButton).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialogView.findViewById<View>(R.id.submitButton).setOnClickListener {
+                val oldPassword = oldPasswordInput.text.toString()
+                val newPassword = newPasswordInput.text.toString()
+
+                if (oldPassword.isEmpty() || newPassword.isEmpty()) {
+                    AlertDialog.Builder(requireContext())
+                        .setMessage("Both fields must be filled!")
+                        .setPositiveButton("OK", null)
+                        .show()
+                } else if (newPassword.length < 6) {
+                    AlertDialog.Builder(requireContext())
+                        .setMessage("The new password must be at least 6 characters long.")
+                        .setPositiveButton("OK", null)
+                        .show()
+                } else {
+                    val user = FirebaseAuth.getInstance().currentUser
+                    val email = user?.email
+
+                    if (email != null) {
+                        val credential = EmailAuthProvider.getCredential(email, oldPassword)
+
+                        // Re-authenticate the user
+                        user.reauthenticate(credential)
+                            .addOnCompleteListener { authTask ->
+                                if (authTask.isSuccessful) {
+                                    // Update password
+                                    user.updatePassword(newPassword)
+                                        .addOnCompleteListener { updateTask ->
+                                            if (updateTask.isSuccessful) {
+                                                AlertDialog.Builder(requireContext())
+                                                    .setMessage("Password successfully changed!")
+                                                    .setPositiveButton("OK") { _, _ -> dialog.dismiss() }
+                                                    .show()
+                                            } else {
+                                                AlertDialog.Builder(requireContext())
+                                                    .setMessage("Failed to update password. Try again later.")
+                                                    .setPositiveButton("OK", null)
+                                                    .show()
+                                            }
+                                        }
+                                } else {
+                                    AlertDialog.Builder(requireContext())
+                                        .setMessage("Old password is incorrect.")
+                                        .setPositiveButton("OK", null)
+                                        .show()
+                                }
+                            }
+                    }
+                }
+            }
+
+            dialog.show()
         }
 
         binding.changeAccountImage.setOnClickListener {
-            // Navigate to change profile image functionality
+            val options = arrayOf("Take Picture", "Import from Gallery")
             AlertDialog.Builder(requireContext())
-                .setTitle("Change Profile Image")
-                .setMessage("This feature is under construction.")
-                .setPositiveButton("OK", null)
+                .setTitle("Change Account Image")
+                .setItems(options) { _, which ->
+                    when (which) {
+                        0 -> openCamera()
+                        1 -> openGallery()
+                    }
+                }
                 .show()
         }
 
         binding.aboutUs.setOnClickListener {
-            // Navigate to About Us page
             AlertDialog.Builder(requireContext())
                 .setTitle("About Us")
                 .setMessage("This is a sample application developed by Team Kelompok3.")
@@ -77,7 +153,6 @@ class ProfileFragment : Fragment() {
         }
 
         binding.faq.setOnClickListener {
-            // Navigate to FAQ page
             AlertDialog.Builder(requireContext())
                 .setTitle("FAQ")
                 .setMessage("Frequently Asked Questions will be available soon.")
@@ -86,7 +161,6 @@ class ProfileFragment : Fragment() {
         }
 
         binding.helpFeedback.setOnClickListener {
-            // Navigate to Help & Feedback page
             AlertDialog.Builder(requireContext())
                 .setTitle("Help & Feedback")
                 .setMessage("Help and feedback options are under construction.")
@@ -95,7 +169,6 @@ class ProfileFragment : Fragment() {
         }
 
         binding.supportUs.setOnClickListener {
-            // Navigate to Support Us page
             AlertDialog.Builder(requireContext())
                 .setTitle("Support Us")
                 .setMessage("Support options will be available soon.")
@@ -104,15 +177,13 @@ class ProfileFragment : Fragment() {
         }
 
         binding.logoutButton.setOnClickListener {
-            // Show confirmation dialog before logging out
             AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.logout_confirmation_title))
                 .setMessage(getString(R.string.logout_confirmation_message))
                 .setPositiveButton(getString(R.string.logout_confirmation_yes)) { _, _ ->
-                    // Clear session data but keep the name
+                    val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     sharedPreferences.edit().remove("session_token").apply()
 
-                    // Navigate to the login screen
                     val intent = Intent(requireContext(), LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -122,37 +193,64 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun saveUserName(sharedPreferences: SharedPreferences, newName: String) {
-        sharedPreferences.edit().putString("user_name", newName).apply()
-        binding.userNameTextView.text = newName
+    private fun openCamera() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, CAMERA_REQUEST_CODE)
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+        }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun openGallery() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent, GALLERY_REQUEST_CODE)
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), GALLERY_PERMISSION_CODE)
+        }
     }
-}
 
-// Dialog Fragment for changing user name
-class ChangeNameDialogFragment(private val onNameChanged: (String) -> Unit) : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(requireContext())
-        val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.dialog_change_name, null)
-        val nameInput = view.findViewById<EditText>(R.id.nameInput)
-
-        builder.setView(view)
-            .setTitle("Change Account Name")
-            .setPositiveButton("Save") { _, _ ->
-                val newName = nameInput.text.toString()
-                if (newName.isNotEmpty()) {
-                    onNameChanged(newName)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CAMERA_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openCamera()
+                } else {
+                    Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
+            GALLERY_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openGallery()
+                } else {
+                    Toast.makeText(requireContext(), "Storage permission denied", Toast.LENGTH_SHORT).show()
+                }
             }
+        }
+    }
 
-        return builder.create()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CAMERA_REQUEST_CODE -> {
+                    val imageBitmap = data?.extras?.get("data") as? Bitmap
+                    binding.profileImageView.setImageBitmap(imageBitmap)
+                }
+                GALLERY_REQUEST_CODE -> {
+                    val selectedImageUri: Uri? = data?.data
+                    binding.profileImageView.setImageURI(selectedImageUri)
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val CAMERA_REQUEST_CODE = 100
+        private const val GALLERY_REQUEST_CODE = 101
+        private const val CAMERA_PERMISSION_CODE = 102
+        private const val GALLERY_PERMISSION_CODE = 103
     }
 }

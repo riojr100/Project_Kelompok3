@@ -14,11 +14,11 @@
 
         <!-- Profile Image -->
         <ImageView
-            android:id="@+id/profile_image"
+            android:id="@+id/profileImageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_profile"
+            android:src="@drawable/ic_image"
             android:scaleType="centerCrop"
             android:layout_marginBottom="16dp"
             android:background="@drawable/profile_image_background"
@@ -29,7 +29,7 @@
             android:id="@+id/userNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User"
+            android:text="Martha Hays"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:layout_marginBottom="24dp" />
@@ -42,210 +42,286 @@
             android:gravity="center"
             android:layout_marginBottom="24dp">
 
-            <Button
+            <TextView
                 android:id="@+id/taskLeftTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="10 Task left"
-                android:backgroundTint="@color/gray"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:gravity="center" />
 
-            <Button
+            <TextView
                 android:id="@+id/taskDoneTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="5 Task done"
-                android:backgroundTint="@color/gray"
                 android:textColor="@android:color/white"
+                android:gravity="center"
                 android:layout_marginStart="16dp" />
         </LinearLayout>
 
-        <!-- Settings Section -->
+        <!-- Settings Section Header -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Settings"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp" />
 
+        <!-- Change Account Name -->
         <LinearLayout
+            android:id="@+id/changeAccountName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
 
-            <LinearLayout
-                android:id="@+id/changeAccountName"
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_image" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:background="?selectableItemBackground">
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Change account name"
+                android:textColor="@android:color/white" />
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/baseline_person_24" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Change account name"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/changeAccountPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:background="?selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_lock" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Change account password"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/changeAccountImage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:background="?selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_profile" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Change account image"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/aboutUs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:background="?selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_info" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="About Us"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/faq"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:background="?selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_help" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="FAQ"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/helpFeedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:background="?selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_feedback" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Help and Feedback"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/supportUs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:background="?selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_support" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Support Us"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
         </LinearLayout>
 
-        <!-- Logout Button -->
-        <Button
-            android:id="@+id/logout_button"
+        <!-- Change Account Password -->
+        <LinearLayout
+            android:id="@+id/changeAccountPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log out"
-            android:backgroundTint="@color/red"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_lock" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Change account password"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
+        </LinearLayout>
+
+        <!-- Change Account Image -->
+        <LinearLayout
+            android:id="@+id/changeAccountImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_camera" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Change account image"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
+        </LinearLayout>
+
+        <!-- CreDo Section Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CreDo"
             android:textColor="@android:color/white"
-            android:layout_marginTop="24dp" />
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- About Us -->
+        <LinearLayout
+            android:id="@+id/aboutUs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_info" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="About Us"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
+        </LinearLayout>
+
+        <!-- FAQ -->
+        <LinearLayout
+            android:id="@+id/faq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_help" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="FAQ"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
+        </LinearLayout>
+
+        <!-- Help & Feedback -->
+        <LinearLayout
+            android:id="@+id/helpFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_feedback" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Help and Feedback"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
+        </LinearLayout>
+
+        <!-- Support Us -->
+        <LinearLayout
+            android:id="@+id/supportUs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_support" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Support Us"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
+        </LinearLayout>
+
+        <!-- Logout -->
+        <LinearLayout
+            android:id="@+id/logoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_logout" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Log out"
+                android:textColor="@color/red" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

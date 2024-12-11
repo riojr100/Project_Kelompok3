@@ -10,6 +10,6 @@
         android:id="@+id/nameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your name"
-        android:inputType="text" />
+        android:hint="Enter new name"
+        android:inputType="textPersonName" />
 </LinearLayout>
