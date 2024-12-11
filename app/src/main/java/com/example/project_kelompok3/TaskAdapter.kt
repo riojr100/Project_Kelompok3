@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 // Adapter for RecyclerView
-class TaskAdapter(private val tasks: List<Task>, private val listener: HomeFragment) :
+class TaskAdapter(private val tasks: MutableList<Task>, private val listener: HomeFragment) :
     RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     interface TaskAdapterListener {
@@ -116,11 +116,11 @@ class TaskAdapter(private val tasks: List<Task>, private val listener: HomeFragm
                 .delete()
                 .addOnSuccessListener {
                     // Remove the task from the local list once it's deleted in Firestore
-                    tasks.toMutableList().remove(task)
-
+//                    tasks.toMutableList().remove(task)
+                    val position = tasks.indexOf(task)
+                    tasks.removeAt(position)
                     // Notify the adapter that the item has been removed
-                    notifyDataSetChanged()
-
+                    notifyItemRemoved(position)
                     // Optionally, you can update the UI to show a message when all tasks are deleted
                     if (selectedTasks.isEmpty()) {
                         listener.hideSelectionDialog()
