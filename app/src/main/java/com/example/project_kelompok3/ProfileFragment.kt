@@ -1,82 +1,158 @@
 package com.example.project_kelompok3
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import com.google.firebase.auth.FirebaseAuth
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import com.example.project_kelompok3.databinding.FragmentProfileBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var logoutButton: Button
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        // Load user name
+        val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val userName = sharedPreferences.getString("user_name", "User")
+        binding.userNameTextView.text = userName
+
+        // Set task stats
+        binding.taskLeftTextView.text = getString(R.string.task_left)
+        binding.taskDoneTextView.text = getString(R.string.task_done)
+
+        // Set up menu navigation
+        setupMenu(sharedPreferences)
+
+        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        auth = FirebaseAuth.getInstance()
-        logoutButton = requireView().findViewById(R.id.logout_button)
-
-        logoutButton.setOnClickListener {
-            auth.signOut()
-            if (isAdded) {
-                val intent = Intent(context, LoginActivity::class.java)
-                startActivity(intent)
-
+    private fun setupMenu(sharedPreferences: SharedPreferences) {
+        binding.changeAccountName.setOnClickListener {
+            // Open change account name dialog
+            val dialog = ChangeNameDialogFragment { newName ->
+                saveUserName(sharedPreferences, newName)
             }
+            dialog.show(parentFragmentManager, "ChangeNameDialog")
         }
 
+        binding.changeAccountPassword.setOnClickListener {
+            // Navigate to change password functionality
+            AlertDialog.Builder(requireContext())
+                .setTitle("Change Password")
+                .setMessage("This feature is under construction.")
+                .setPositiveButton("OK", null)
+                .show()
+        }
+
+        binding.changeAccountImage.setOnClickListener {
+            // Navigate to change profile image functionality
+            AlertDialog.Builder(requireContext())
+                .setTitle("Change Profile Image")
+                .setMessage("This feature is under construction.")
+                .setPositiveButton("OK", null)
+                .show()
+        }
+
+        binding.aboutUs.setOnClickListener {
+            // Navigate to About Us page
+            AlertDialog.Builder(requireContext())
+                .setTitle("About Us")
+                .setMessage("This is a sample application developed by Team Kelompok3.")
+                .setPositiveButton("OK", null)
+                .show()
+        }
+
+        binding.faq.setOnClickListener {
+            // Navigate to FAQ page
+            AlertDialog.Builder(requireContext())
+                .setTitle("FAQ")
+                .setMessage("Frequently Asked Questions will be available soon.")
+                .setPositiveButton("OK", null)
+                .show()
+        }
+
+        binding.helpFeedback.setOnClickListener {
+            // Navigate to Help & Feedback page
+            AlertDialog.Builder(requireContext())
+                .setTitle("Help & Feedback")
+                .setMessage("Help and feedback options are under construction.")
+                .setPositiveButton("OK", null)
+                .show()
+        }
+
+        binding.supportUs.setOnClickListener {
+            // Navigate to Support Us page
+            AlertDialog.Builder(requireContext())
+                .setTitle("Support Us")
+                .setMessage("Support options will be available soon.")
+                .setPositiveButton("OK", null)
+                .show()
+        }
+
+        binding.logoutButton.setOnClickListener {
+            // Show confirmation dialog before logging out
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.logout_confirmation_title))
+                .setMessage(getString(R.string.logout_confirmation_message))
+                .setPositiveButton(getString(R.string.logout_confirmation_yes)) { _, _ ->
+                    // Clear session data but keep the name
+                    sharedPreferences.edit().remove("session_token").apply()
+
+                    // Navigate to the login screen
+                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+                .setNegativeButton(getString(R.string.logout_confirmation_no), null)
+                .show()
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun saveUserName(sharedPreferences: SharedPreferences, newName: String) {
+        sharedPreferences.edit().putString("user_name", newName).apply()
+        binding.userNameTextView.text = newName
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+
+// Dialog Fragment for changing user name
+class ChangeNameDialogFragment(private val onNameChanged: (String) -> Unit) : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = requireActivity().layoutInflater
+        val view = inflater.inflate(R.layout.dialog_change_name, null)
+        val nameInput = view.findViewById<EditText>(R.id.nameInput)
+
+        builder.setView(view)
+            .setTitle("Change Account Name")
+            .setPositiveButton("Save") { _, _ ->
+                val newName = nameInput.text.toString()
+                if (newName.isNotEmpty()) {
+                    onNameChanged(newName)
                 }
             }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+
+        return builder.create()
     }
 }

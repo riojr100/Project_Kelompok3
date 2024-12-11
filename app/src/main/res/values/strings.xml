@@ -10,4 +10,11 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
     <string name="profile_image">test</string>
+    <string name="task_left">10 Task left</string>
+    <string name="task_done">5 Task done</string>
+    <string name="logout_confirmation_title">Logout</string>
+    <string name="logout_confirmation_message">Are you sure you want to log out?</string>
+    <string name="logout_confirmation_yes">Yes</string>
+    <string name="logout_confirmation_no">No</string>
+
 </resources>
