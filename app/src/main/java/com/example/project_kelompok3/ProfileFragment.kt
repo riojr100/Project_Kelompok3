@@ -21,6 +21,7 @@ import com.example.project_kelompok3.databinding.FragmentProfileBinding
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import java.io.ByteArrayOutputStream
 
 class ProfileFragment : Fragment() {
@@ -29,6 +30,7 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+    private var tasksListener: ListenerRegistration? = null // Listener for tasks
 
     companion object {
         private const val GALLERY_REQUEST_CODE = 101
@@ -40,10 +42,25 @@ class ProfileFragment : Fragment() {
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
+        // Initialize "Task Left" to 0
+        binding.taskLeftTextView.text = "0 Task(s) left"
+
+        // Load user profile and task data
         loadUserProfile()
+        setupRealtimeTaskLeftListener()
+
+        // Set up button listeners
         setupMenu()
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+
+        // Remove Firestore listener when the view is destroyed
+        tasksListener?.remove()
     }
 
     private fun loadUserProfile() {
@@ -51,15 +68,12 @@ class ProfileFragment : Fragment() {
         val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
         if (user != null) {
-            // Load user profile from Firestore
             firestore.collection("users").document(user.uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        // Fetch user details from Firestore
                         val userName = document.getString("name") ?: "User"
                         val avatarBase64 = document.getString("avatarBase64")
 
-                        // Update UI with fetched details
                         binding.userNameTextView.text = userName
                         sharedPreferences.edit().putString("user_name", userName).apply()
 
@@ -67,15 +81,11 @@ class ProfileFragment : Fragment() {
                             val avatarBitmap = decodeBase64ToBitmap(avatarBase64)
                             Glide.with(this)
                                 .load(avatarBitmap)
-                                .circleCrop() // Apply circular cropping
+                                .circleCrop()
                                 .into(binding.profileImageView)
                         }
                     } else {
-                        // Document does not exist, initialize with default values
-                        val defaultData = hashMapOf(
-                            "name" to "User",
-                            "avatarBase64" to ""
-                        )
+                        val defaultData = hashMapOf("name" to "User", "avatarBase64" to "")
                         firestore.collection("users").document(user.uid).set(defaultData)
                             .addOnSuccessListener {
                                 binding.userNameTextView.text = "User"
@@ -92,16 +102,38 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun setupRealtimeTaskLeftListener() {
+        val user = auth.currentUser
+        if (user != null) {
+            val tasksRef = firestore.collection("users")
+                .document(user.uid)
+                .collection("tasks")
+
+            // Remove any existing listener before setting up a new one
+            tasksListener?.remove()
+
+            tasksListener = tasksRef.addSnapshotListener { querySnapshot, error ->
+                if (error != null) {
+                    Toast.makeText(requireContext(), "Error listening to tasks: ${error.message}", Toast.LENGTH_SHORT).show()
+                    return@addSnapshotListener
+                }
+
+                if (querySnapshot != null) {
+                    val taskCount = querySnapshot.size()
+                    binding.taskLeftTextView.text = "$taskCount Task(s) left"
+                }
+            }
+        }
+    }
+
     private fun setupMenu() {
-        // Change Account Name
         binding.changeAccountName.setOnClickListener {
-            val dialog = ChangeNameDialogFragment { newName: String ->
+            val dialog = ChangeNameDialogFragment { newName ->
                 saveUserName(newName)
             }
             dialog.show(parentFragmentManager, "ChangeNameDialog")
         }
 
-        // Change Account Password
         binding.changeAccountPassword.setOnClickListener {
             val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_change_password, null)
             val oldPasswordInput = dialogView.findViewById<EditText>(R.id.oldPasswordInput)
@@ -133,12 +165,10 @@ class ProfileFragment : Fragment() {
             dialog.show()
         }
 
-        // Change Account Image
         binding.changeAccountImage.setOnClickListener {
             openGallery()
         }
 
-        // FAQ
         binding.faq.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("FAQ")
@@ -147,7 +177,6 @@ class ProfileFragment : Fragment() {
                 .show()
         }
 
-        // About Us
         binding.aboutUs.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("About Us")
@@ -156,7 +185,6 @@ class ProfileFragment : Fragment() {
                 .show()
         }
 
-        // Help & Feedback
         binding.helpFeedback.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Help & Feedback")
@@ -165,7 +193,6 @@ class ProfileFragment : Fragment() {
                 .show()
         }
 
-        // Support Us
         binding.supportUs.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Support Us")
@@ -174,12 +201,15 @@ class ProfileFragment : Fragment() {
                 .show()
         }
 
-        // Logout
         binding.logoutButton.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Logout")
                 .setMessage("Are you sure you want to logout?")
                 .setPositiveButton("Yes") { _, _ ->
+                    // Clear listeners when logging out
+                    tasksListener?.remove()
+                    tasksListener = null
+
                     val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     sharedPreferences.edit().remove("session_token").apply()
 
@@ -206,9 +236,9 @@ class ProfileFragment : Fragment() {
                 val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
                 Glide.with(this)
                     .load(bitmap)
-                    .circleCrop() // Apply circular cropping
-                    .into(binding.profileImageView) // Update UI
-                uploadAvatarToFirestore(bitmap) // Save to Firestore
+                    .circleCrop()
+                    .into(binding.profileImageView)
+                uploadAvatarToFirestore(bitmap)
             }
         }
     }
@@ -218,8 +248,7 @@ class ProfileFragment : Fragment() {
         if (user != null) {
             val base64Avatar = encodeImageToBase64(bitmap)
 
-            // Validate the size of the Base64 string
-            if (base64Avatar.length > 500_000) { // Limit to ~500 KB
+            if (base64Avatar.length > 500_000) {
                 Toast.makeText(requireContext(), "Avatar is too large to save. Please use a smaller image.", Toast.LENGTH_LONG).show()
                 return
             }
@@ -281,9 +310,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun encodeImageToBase64(bitmap: Bitmap): String {
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true) // Resize to 200x200
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true)
         val byteArrayOutputStream = ByteArrayOutputStream()
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream) // Compress to 80%
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
@@ -291,10 +320,5 @@ class ProfileFragment : Fragment() {
     private fun decodeBase64ToBitmap(base64Str: String): Bitmap {
         val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
