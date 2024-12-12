@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -49,6 +48,16 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore.ktx)
+
+    // Add direct dependencies for core libraries (no libs alias)
+    implementation(libs.androidx.core.ktx.v1101)
+    implementation(libs.androidx.appcompat.v161)
+    implementation(libs.androidx.constraintlayout.v220)
+    implementation(libs.firebase.auth.v2211)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.glide)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
