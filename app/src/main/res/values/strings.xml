@@ -16,5 +16,6 @@
     <string name="logout_confirmation_message">Are you sure you want to log out?</string>
     <string name="logout_confirmation_yes">Yes</string>
     <string name="logout_confirmation_no">No</string>
+    <string name="back_button">Back</string>
 
 </resources>

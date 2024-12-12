@@ -5,13 +5,41 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
+    <!-- Top Layout -->
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/black">
+
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/black"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+        <!-- Custom Content -->
+        <TextView
+            android:id="@+id/topLayoutTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to CreDo"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:padding="8dp" />
+    </LinearLayout>
+
     <!-- Logo CreDo -->
     <ImageView
         android:id="@+id/logo_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_launcher_foreground"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
     <!-- Text CreDo -->
     <TextView
@@ -23,6 +51,5 @@
         android:textColor="@android:color/white"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
-
+        android:layout_marginBottom="16dp" />
 </FrameLayout>

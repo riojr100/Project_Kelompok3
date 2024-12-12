@@ -126,7 +126,15 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
     private fun setupMenu() {
+        binding.appSettings.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, AppSettingsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         binding.changeAccountName.setOnClickListener {
             val dialog = ChangeNameDialogFragment { newName ->
                 saveUserName(newName)

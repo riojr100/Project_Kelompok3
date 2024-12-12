@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Color Options -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose App Background Color"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <RadioGroup
+            android:id="@+id/colorRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/colorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Blue (#7cd1e5)"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/colorOrange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Orange (#e38e4d)"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/colorGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Green (#d6fd7f)"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/colorDefault"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="lavender(#8692f7)"
+                android:textColor="@android:color/white" />
+        </RadioGroup>
+    </LinearLayout>
+</ScrollView>

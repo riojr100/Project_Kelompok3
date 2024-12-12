@@ -70,6 +70,47 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="16dp" />
 
+        <!-- App Settings -->
+        <LinearLayout
+            android:id="@+id/appSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_settings" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="App Settings"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Arrow" />
+        </LinearLayout>
+
+        <!-- Settings Section Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Account"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp" />
+
         <!-- Change Account Name -->
         <LinearLayout
             android:id="@+id/changeAccountName"
