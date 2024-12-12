@@ -181,35 +181,31 @@ class ProfileFragment : Fragment() {
         }
 
         binding.faq.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("FAQ")
-                .setMessage("Frequently Asked Questions will be available soon.")
-                .setPositiveButton("OK", null)
-                .show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, FAQFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.aboutUs.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("About Us")
-                .setMessage("This app was created by Team Kelompok3.")
-                .setPositiveButton("OK", null)
-                .show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, AboutUsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.helpFeedback.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Help & Feedback")
-                .setMessage("This feature is under construction.")
-                .setPositiveButton("OK", null)
-                .show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, HAFFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.supportUs.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Support Us")
-                .setMessage("Support options will be added soon.")
-                .setPositiveButton("OK", null)
-                .show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, SupportFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.logoutButton.setOnClickListener {
