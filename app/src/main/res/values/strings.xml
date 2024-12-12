@@ -5,7 +5,6 @@
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
     <string name="stop">Stop</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
@@ -20,6 +19,10 @@
     <string name="next_month">Next</string>
     <string name="add_event">Add Event</string>
     <string name="sun">SUN</string>
-    <string name="month_year_example">December 2024</string>
-
+    <string name="month_year">December 2024</string> <!-- Menambahkan string untuk month_year -->
+    <string name="today_date">Today</string>
+    <string name="selected_date">Selected Date:</string> <!-- Menambahkan string untuk selected_date -->
+    <string name="save_note">Save Note</string>
+    <string name="write_a_note">Write a note here</string>
+    <string name="month_year_example">Desember 2024</string>
 </resources>

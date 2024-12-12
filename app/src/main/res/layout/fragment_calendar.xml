@@ -3,34 +3,59 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
+    <!-- Bagian Header untuk Menampilkan Tanggal Hari Ini -->
     <TextView
-        android:id="@+id/tv_month_year"
+        android:id="@+id/tv_today_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="March 2024"
-        android:textSize="18sp" />
+        android:text="Kam, 12 Desember 2024"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:padding="8dp"
+        android:gravity="center" />
 
+    <!-- Bulan dan Tahun -->
+    <TextView
+        android:id="@+id/tv_month_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_today_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Desember 2024"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:gravity="center" />
+
+    <!-- Tombol Bulan Sebelumnya -->
     <ImageView
         android:id="@+id/btn_prev_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tv_month_year"
         app:layout_constraintStart_toStartOf="parent"
-        android:src="@drawable/ic_arrow_back" />
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/black"
+        android:contentDescription="@string/previous_month" />
 
+    <!-- Tombol Bulan Berikutnya -->
     <ImageView
         android:id="@+id/btn_next_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tv_month_year"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_arrow_forward" />
+        android:src="@drawable/ic_arrow_forward"
+        app:tint="@color/black"
+        android:contentDescription="@string/next_month" />
 
+    <!-- RecyclerView untuk Kalender -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendar_recycler_view"
         android:layout_width="0dp"
@@ -38,5 +63,7 @@
         app:layout_constraintTop_toBottomOf="@id/btn_prev_month"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="8dp"
+        android:clipToPadding="false" />
 </androidx.constraintlayout.widget.ConstraintLayout>
