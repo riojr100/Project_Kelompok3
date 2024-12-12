@@ -1,71 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="@color/white">
 
-    <!-- TextView for displaying the current month and year -->
+    <!-- Bagian Header untuk Menampilkan Tanggal Hari Ini -->
     <TextView
-        android:id="@+id/monthTextView"
+        android:id="@+id/tv_today_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="February 2022"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
-        android:layout_margin="16dp"/>
+        android:text="Kam, 12 Desember 2024"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:padding="8dp"
+        android:gravity="center" />
 
-    <!-- Navigation buttons for previous and next week -->
-    <ImageView
-        android:id="@+id/prevWeekButton"
+    <!-- Bulan dan Tahun -->
+    <TextView
+        android:id="@+id/tv_month_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_today_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Desember 2024"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:gravity="center" />
+
+    <!-- Tombol Bulan Sebelumnya -->
+    <ImageView
+        android:id="@+id/btn_prev_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_month_year"
+        app:layout_constraintStart_toStartOf="parent"
         android:src="@drawable/ic_arrow_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/monthTextView"
-        android:layout_margin="16dp"/>
+        app:tint="@color/black"
+        android:contentDescription="@string/previous_month" />
 
+    <!-- Tombol Bulan Berikutnya -->
     <ImageView
-        android:id="@+id/nextWeekButton"
+        android:id="@+id/btn_next_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_month_year"
+        app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_arrow_forward"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/monthTextView"
-        android:layout_margin="16dp"/>
+        app:tint="@color/black"
+        android:contentDescription="@string/next_month" />
 
-    <!-- Horizontal scrolling calendar -->
-    <HorizontalScrollView
-        android:id="@+id/calendarScrollView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/prevWeekButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/calendarLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <!-- Calendar buttons will be added dynamically here -->
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <!-- RecyclerView for tasks -->
+    <!-- RecyclerView untuk Kalender -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewTasks"
+        android:id="@+id/calendar_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/calendarScrollView"
+        app:layout_constraintTop_toBottomOf="@id/btn_prev_month"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:clipToPadding="false" />
 </androidx.constraintlayout.widget.ConstraintLayout>
