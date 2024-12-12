@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.project_kelompok3.databinding.FragmentProfileBinding
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -48,28 +49,41 @@ class ProfileFragment : Fragment() {
     private fun loadUserProfile() {
         val user = auth.currentUser
         val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val savedName = sharedPreferences.getString("user_name", "User") // Default to "User"
-
-        binding.userNameTextView.text = savedName
 
         if (user != null) {
+            // Load user profile from Firestore
             firestore.collection("users").document(user.uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
+                        // Fetch user details from Firestore
                         val userName = document.getString("name") ?: "User"
                         val avatarBase64 = document.getString("avatarBase64")
 
-                        // Update UI and SharedPreferences
-                        if (userName != savedName) {
-                            sharedPreferences.edit().putString("user_name", userName).apply()
-                            binding.userNameTextView.text = userName
-                        }
+                        // Update UI with fetched details
+                        binding.userNameTextView.text = userName
+                        sharedPreferences.edit().putString("user_name", userName).apply()
 
-                        // Decode and load avatar
                         if (!avatarBase64.isNullOrEmpty()) {
                             val avatarBitmap = decodeBase64ToBitmap(avatarBase64)
-                            binding.profileImageView.setImageBitmap(avatarBitmap)
+                            Glide.with(this)
+                                .load(avatarBitmap)
+                                .circleCrop() // Apply circular cropping
+                                .into(binding.profileImageView)
                         }
+                    } else {
+                        // Document does not exist, initialize with default values
+                        val defaultData = hashMapOf(
+                            "name" to "User",
+                            "avatarBase64" to ""
+                        )
+                        firestore.collection("users").document(user.uid).set(defaultData)
+                            .addOnSuccessListener {
+                                binding.userNameTextView.text = "User"
+                                sharedPreferences.edit().putString("user_name", "User").apply()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(requireContext(), "Failed to initialize profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
                     }
                 }
                 .addOnFailureListener { e ->
@@ -190,7 +204,10 @@ class ProfileFragment : Fragment() {
             val imageUri = data.data
             if (imageUri != null) {
                 val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
-                binding.profileImageView.setImageBitmap(bitmap) // Update UI
+                Glide.with(this)
+                    .load(bitmap)
+                    .circleCrop() // Apply circular cropping
+                    .into(binding.profileImageView) // Update UI
                 uploadAvatarToFirestore(bitmap) // Save to Firestore
             }
         }
@@ -209,32 +226,12 @@ class ProfileFragment : Fragment() {
 
             val userDocRef = firestore.collection("users").document(user.uid)
 
-            userDocRef.get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        userDocRef.update("avatarBase64", base64Avatar)
-                            .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "Avatar updated successfully!", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(requireContext(), "Failed to save avatar: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                    } else {
-                        val userData = hashMapOf(
-                            "name" to binding.userNameTextView.text.toString(),
-                            "avatarBase64" to base64Avatar
-                        )
-                        userDocRef.set(userData)
-                            .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "Avatar saved successfully!", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(requireContext(), "Failed to save avatar: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                    }
+            userDocRef.update("avatarBase64", base64Avatar)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Avatar updated successfully!", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Failed to access Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Failed to save avatar: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -245,36 +242,14 @@ class ProfileFragment : Fragment() {
             val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
             val userDocRef = firestore.collection("users").document(user.uid)
 
-            userDocRef.get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        userDocRef.update("name", newName)
-                            .addOnSuccessListener {
-                                sharedPreferences.edit().putString("user_name", newName).apply()
-                                binding.userNameTextView.text = newName
-                                Toast.makeText(requireContext(), "Name updated successfully!", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(requireContext(), "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                    } else {
-                        val userData = hashMapOf(
-                            "name" to newName,
-                            "avatarBase64" to ""
-                        )
-                        userDocRef.set(userData)
-                            .addOnSuccessListener {
-                                sharedPreferences.edit().putString("user_name", newName).apply()
-                                binding.userNameTextView.text = newName
-                                Toast.makeText(requireContext(), "Name saved successfully!", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(requireContext(), "Failed to save name: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                    }
+            userDocRef.update("name", newName)
+                .addOnSuccessListener {
+                    sharedPreferences.edit().putString("user_name", newName).apply()
+                    binding.userNameTextView.text = newName
+                    Toast.makeText(requireContext(), "Name updated successfully!", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Failed to access Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Failed to update name: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
