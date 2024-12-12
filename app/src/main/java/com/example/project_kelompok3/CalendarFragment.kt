@@ -15,6 +15,8 @@ class CalendarFragment : Fragment() {
 
     private lateinit var calendarAdapter: CalendarAdapter
     private val calendar = Calendar.getInstance()
+    private var notesByDate: Map<String, List<String>> = emptyMap() // Notes grouped by date
+    private lateinit var tvNotesSection: TextView // TextView for displaying notes below the calendar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,30 +29,34 @@ class CalendarFragment : Fragment() {
         val btnPrevMonth = view.findViewById<View>(R.id.btn_prev_month)
         val btnNextMonth = view.findViewById<View>(R.id.btn_next_month)
         val recyclerView = view.findViewById<RecyclerView>(R.id.calendar_recycler_view)
+        tvNotesSection = view.findViewById(R.id.tv_notes_section) // Find the notes section TextView
 
-        // Set hari ini
+        // Set today’s date
         tvTodayDate.text = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault()).format(calendar.time)
 
-        // Set bulan dan tahun
+        // Set month and year
         tvMonthYear.text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(calendar.time)
 
-        // Inisialisasi RecyclerView
-        calendarAdapter = CalendarAdapter(calendar, onDateSelected = {
-            // Tidak melakukan apa-apa karena bagian bawah sudah dihapus
+        // Initialize RecyclerView
+        calendarAdapter = CalendarAdapter(calendar, onDateSelected = { date ->
+            // Show notes for selected date
+            val selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+            val notes = notesByDate[selectedDate] ?: listOf("No notes for this date")
+            displayNotes(selectedDate, notes)
         }, onMonthChanged = {
             tvMonthYear.text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(it.time)
-        })
+        }, notesByDate)
 
-        recyclerView.layoutManager = GridLayoutManager(context, 7) // 7 kolom untuk hari
+        recyclerView.layoutManager = GridLayoutManager(context, 7) // 7 columns for days
         recyclerView.adapter = calendarAdapter
 
-        // Navigasi Bulan Sebelumnya
+        // Navigate to previous month
         btnPrevMonth.setOnClickListener {
             calendar.add(Calendar.MONTH, -1)
             calendarAdapter.updateCalendar(calendar)
         }
 
-        // Navigasi Bulan Berikutnya
+        // Navigate to next month
         btnNextMonth.setOnClickListener {
             calendar.add(Calendar.MONTH, 1)
             calendarAdapter.updateCalendar(calendar)
@@ -58,4 +64,20 @@ class CalendarFragment : Fragment() {
 
         return view
     }
+
+    // Function to set notes data from HomeFragment
+    fun setNotesData(notes: Map<String, List<Task>>) {
+        // Convert tasks to a list of titles grouped by date
+        notesByDate = notes.mapValues { entry ->
+            entry.value.map { it.title }
+        }
+        calendarAdapter.updateNotes(notesByDate) // Update calendar adapter with new data
+    }
+
+    // Function to display notes below the calendar
+    private fun displayNotes(date: String, notes: List<String>) {
+        val notesText = "Notes for $date:\n" + notes.joinToString(separator = "\n")
+        tvNotesSection.text = notesText
+        tvNotesSection.visibility = View.VISIBLE
+        }
 }

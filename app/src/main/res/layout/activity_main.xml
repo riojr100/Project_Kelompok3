@@ -52,4 +52,24 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
+
+    <!-- Fragment Container for CalendarFragment -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:name="com.example.project_kelompok3.CalendarFragment" />
+
+    <!-- Fragment Container for HomeFragment -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_home"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:name="com.example.project_kelompok3.HomeFragment" />
 </FrameLayout>

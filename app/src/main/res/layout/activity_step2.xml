@@ -15,7 +15,7 @@
         android:layout_height="200dp"
         android:layout_marginTop="64dp"
         android:contentDescription="Onboarding Image"
-        android:src="@drawable/ic_launcher_foreground"
+        android:src="@drawable/access2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -49,29 +49,33 @@
         app:layout_constraintWidth_percent="0.8"/>
 
     <!-- Tombol Next -->
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEXT"
-        android:backgroundTint="@color/Purple"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Tombol Back -->
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="104dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/Purple"
+        android:text="NEXT"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_description" />
+
     <Button
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BACK"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@android:color/transparent"
+        android:text="BACK"
         android:textColor="@android:color/white"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/next_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/next_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

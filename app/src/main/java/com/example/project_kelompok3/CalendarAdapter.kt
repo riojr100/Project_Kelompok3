@@ -11,7 +11,8 @@ import java.util.*
 class CalendarAdapter(
     private var calendar: Calendar,
     private val onDateSelected: (Date) -> Unit, // Callback untuk tanggal yang dipilih
-    private val onMonthChanged: (Calendar) -> Unit // Callback untuk bulan yang berubah
+    private val onMonthChanged: (Calendar) -> Unit, // Callback untuk bulan yang berubah
+    private var notesByDate: Map<String, List<String>> = emptyMap() // Notes grouped by date
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     private val days = mutableListOf<Date>()
@@ -48,12 +49,16 @@ class CalendarAdapter(
         val day = SimpleDateFormat("d", Locale.getDefault()).format(date)
         holder.dayTextView.text = day
 
+        val dateKey = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+
         // Highlight untuk tanggal hari ini
         val today = Calendar.getInstance().time
         val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
 
         if (dateFormat.format(date) == dateFormat.format(today)) {
             holder.dayTextView.setBackgroundResource(R.drawable.calendar_day_background_today)
+        } else if (notesByDate.containsKey(dateKey)) {
+            holder.dayTextView.setBackgroundResource(R.drawable.calendar_day_background_with_notes)
         } else if (selectedDate != null && dateFormat.format(date) == dateFormat.format(selectedDate)) {
             holder.dayTextView.setBackgroundResource(R.drawable.calendar_day_background_selected)
         } else {
@@ -87,6 +92,11 @@ class CalendarAdapter(
         generateDays()
         notifyDataSetChanged()
         onMonthChanged(calendar) // Callback untuk memperbarui tampilan bulan di Fragment
+    }
+
+    fun updateNotes(newNotesByDate: Map<String, List<String>>) {
+        notesByDate = newNotesByDate
+        notifyDataSetChanged()
     }
 
     class CalendarViewHolder(view: View) : RecyclerView.ViewHolder(view) {

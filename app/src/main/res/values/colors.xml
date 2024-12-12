@@ -13,4 +13,7 @@
     <color name="orange">#e38e4d</color>
     <color name="green">#d6fd7f</color>
     <color name="primary_color">#7164F0</color>
+    <color name="notesHighlightColor">#4CAF50</color>
+    <color name="colorPrimaryDark">#303F9F</color> <!-- Example dark blue color -->
+
 </resources>

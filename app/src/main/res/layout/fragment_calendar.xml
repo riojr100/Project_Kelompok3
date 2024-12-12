@@ -6,64 +6,91 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <!-- Bagian Header untuk Menampilkan Tanggal Hari Ini -->
+    <!-- Header -->
     <TextView
         android:id="@+id/tv_today_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Kam, 12 Desember 2024"
-        android:textSize="16sp"
+        android:text="@string/today_date"
+        android:textSize="20sp"
         android:textColor="@color/black"
         android:padding="8dp"
-        android:gravity="center" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Bulan dan Tahun -->
     <TextView
         android:id="@+id/tv_month_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/month_year"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:padding="4dp"
         app:layout_constraintTop_toBottomOf="@id/tv_today_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Desember 2024"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:gravity="center" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Tombol Bulan Sebelumnya -->
+    <!-- Navigation Buttons -->
     <ImageView
         android:id="@+id/btn_prev_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_arrow_back"
+        android:contentDescription="@string/btn_prev_description"
+        app:tint="@color/black"
         app:layout_constraintTop_toBottomOf="@id/tv_month_year"
         app:layout_constraintStart_toStartOf="parent"
-        android:src="@drawable/ic_arrow_back"
-        app:tint="@color/black"
-        android:contentDescription="@string/previous_month" />
+        android:layout_marginStart="16dp" />
 
-    <!-- Tombol Bulan Berikutnya -->
     <ImageView
         android:id="@+id/btn_next_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_arrow_forward"
+        android:contentDescription="@string/btn_next_description"
+        app:tint="@color/black"
         app:layout_constraintTop_toBottomOf="@id/tv_month_year"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_arrow_forward"
-        app:tint="@color/black"
-        android:contentDescription="@string/next_month" />
+        android:layout_marginEnd="16dp" />
 
-    <!-- RecyclerView untuk Kalender -->
+    <!-- Calendar RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendar_recycler_view"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/btn_prev_month"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/calendar_recycler_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="8dp"
-        android:clipToPadding="false" />
+        android:layout_marginTop="16dp" />
+
+
+
+    <TextView
+        android:id="@+id/tv_notes_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="@string/no_notes"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

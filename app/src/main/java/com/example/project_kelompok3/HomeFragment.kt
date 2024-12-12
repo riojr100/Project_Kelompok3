@@ -64,11 +64,11 @@ class HomeFragment : Fragment() {
             showEmptyViews()
         }
 
-        dialogDeleteButton.setOnClickListener{
+        dialogDeleteButton.setOnClickListener {
             taskAdapter.deleteSelected()
         }
 
-        dialogExitButton.setOnClickListener{
+        dialogExitButton.setOnClickListener {
             taskAdapter.clearSelections()
             hideSelectionDialog()
         }
@@ -76,27 +76,26 @@ class HomeFragment : Fragment() {
         return view
     }
 
-    // Function to get tasks from Firestore for the current user
     private fun getTasksFromFirestore(userId: String) {
-        // Clear the task list to avoid duplicates
         tasks.clear()
 
         db.collection("users").document(userId).collection("tasks")
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    hideEmptyViews()  // Hide empty task views
+                    hideEmptyViews()
                     for (document in documents) {
                         val task = Task(
-                            taskId = document.getString("taskId")?: "No ID",
+                            taskId = document.getString("taskId") ?: "No ID",
                             title = document.getString("title") ?: "No Title",
                             dueDate = document.getString("dueDate") ?: "No Date"
                         )
                         tasks.add(task)
                     }
-                    taskAdapter.notifyDataSetChanged()  // Update RecyclerView
+                    taskAdapter.notifyDataSetChanged()
+                    passTasksToCalendar()
                 } else {
-                    showEmptyViews()  // Show empty task views if no data
+                    showEmptyViews()
                 }
             }
             .addOnFailureListener { exception ->
@@ -105,10 +104,17 @@ class HomeFragment : Fragment() {
             }
     }
 
-    fun showSelectionDialog(){
+    private fun passTasksToCalendar() {
+        val tasksByDate = tasks.groupBy { it.dueDate }
+        val calendarFragment = parentFragmentManager.findFragmentById(R.id.fragment_calendar) as? CalendarFragment
+        calendarFragment?.setNotesData(tasksByDate)
+    }
+
+    fun showSelectionDialog() {
         selectionDialog.visibility = View.VISIBLE
     }
-    fun hideSelectionDialog(){
+
+    fun hideSelectionDialog() {
         selectionDialog.visibility = View.GONE
     }
 
@@ -122,5 +128,5 @@ class HomeFragment : Fragment() {
         emptyTaskImage.visibility = View.VISIBLE
         emptyTaskMessage.visibility = View.VISIBLE
         taskList.visibility = View.GONE
-    }
+        }
 }

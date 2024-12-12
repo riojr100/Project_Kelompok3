@@ -26,4 +26,10 @@
     <string name="save_note">Save Note</string>
     <string name="write_a_note">Write a note here</string>
     <string name="month_year_example">Desember 2024</string>
+    <!-- Descriptions for buttons -->
+    <string name="btn_prev_description">Previous Month</string>
+    <string name="btn_next_description">Next Month</string>
+
+    <!-- Default text for notes -->
+    <string name="no_notes">No notes for this date</string>
 </resources>
