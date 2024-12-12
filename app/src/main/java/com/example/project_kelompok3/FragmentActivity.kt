@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.GridLayout
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -31,9 +32,11 @@ class FragmentActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var addTaskButton: FloatingActionButton
+    private lateinit var nextButtonAddTaskDialog: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_fragment)
 
         auth = FirebaseAuth.getInstance()
@@ -51,13 +54,35 @@ class FragmentActivity : AppCompatActivity() {
 
         bottomNavigation.setOnItemSelectedListener { item ->
             var selectedFragment: Fragment? = null
+            var pageName: String? = null
             when (item.itemId) {
-                R.id.nav_home -> selectedFragment = homeFragment
-                R.id.nav_calendar -> selectedFragment = calendarFragment
-                R.id.nav_focus -> selectedFragment = focusFragment
-                R.id.nav_profile -> selectedFragment = profileFragment
+//                home calendar focus profile
+                R.id.nav_home -> {
+                    selectedFragment = homeFragment
+                    pageName = "home"
+                }
+
+                R.id.nav_calendar -> {
+                    selectedFragment = calendarFragment
+                    pageName = "calendar"
+                }
+
+                R.id.nav_focus -> {
+                    selectedFragment = focusFragment
+                    pageName = "focus"
+                }
+
+                R.id.nav_profile -> {
+                    selectedFragment = profileFragment
+                    pageName = "profile"
+                }
+
+                else -> {
+                    selectedFragment = homeFragment
+                    pageName = "home"
+                }
             }
-            selectedFragment?.let { loadFragment(it) }
+            loadFragment(selectedFragment)
             true
         }
 
@@ -109,22 +134,80 @@ class FragmentActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+    private fun showCalendarAndTimePicker(onDateTimeSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+
+        // DatePickerDialog to pick the date
+        val datePickerDialog = DatePickerDialog(
+            this, { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                // Set the selected date on the Calendar instance
+                calendar.set(year, monthOfYear, dayOfMonth)
+
+                // Once the date is picked, show TimePickerDialog to pick the time
+                showTimePicker(calendar) { selectedDateTime ->
+                    // Return the combined date and time
+                    onDateTimeSelected(selectedDateTime)
+                }
+
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        // Show the DatePicker dialog
+        datePickerDialog.show()
+    }
+
+    private fun showTimePicker(calendar: Calendar, onTimeSelected: (String) -> Unit) {
+        val timePickerDialog = TimePickerDialog(
+            this, { _, hourOfDay: Int, minute: Int ->
+                // Set the selected time on the Calendar instance
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+
+                // Format the date and time together
+                val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                val formattedDateTime = dateTimeFormat.format(calendar.time)
+
+                // Return the selected date and time
+                onTimeSelected(formattedDateTime)
+
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true // true for 24-hour format, false for AM/PM format
+        )
+        // Show the TimePicker dialog
+        timePickerDialog.show()
+    }
+
+    private fun showEditTaskDialog(){
+
+    }
 
     private fun showAddTaskDialog() {
+        // Create the BottomSheetDialog
         val bottomSheetDialog = BottomSheetDialog(this)
+
+        // Inflate the custom layout for the dialog
         val dialogView = LayoutInflater.from(this).inflate(R.layout.task_input_dialog, null)
+
+        // Set the custom layout to the dialog
         bottomSheetDialog.setContentView(dialogView)
 
+        // Get references to the input fields and buttons
         val taskTitle = dialogView.findViewById<EditText>(R.id.taskTitle)
         val taskDescription = dialogView.findViewById<EditText>(R.id.taskDescription)
         val reminderButton = dialogView.findViewById<ImageButton>(R.id.add_reminder)
         val submitTaskButton = dialogView.findViewById<ImageButton>(R.id.submit_task)
         val priorityTaskButton = dialogView.findViewById<ImageButton>(R.id.add_priority)
         val tagTaskButton = dialogView.findViewById<ImageButton>(R.id.add_tag)
+        val stateTaskButton = dialogView.findViewById<ImageButton>(R.id.add_state)
 
         var dateTime: String = ""
         var priority: Int = 0
         var tag: String = ""
+        var state: String = ""
 
         reminderButton.setOnClickListener {
             showCalendarAndTimePicker { selectedDate ->
@@ -144,108 +227,159 @@ class FragmentActivity : AppCompatActivity() {
             }
         }
 
+        stateTaskButton.setOnClickListener{
+            showStatePopup { SelectedState ->
+                state = SelectedState
+
+            }
+        }
+
+        // Handle submit task button click
         submitTaskButton.setOnClickListener {
             val title = taskTitle.text.toString()
             val description = taskDescription.text.toString()
 
-            if (title.isNotEmpty() && description.isNotEmpty() && dateTime.isNotEmpty() && tag.isNotEmpty() && priority != 0) {
-                val currentUser = auth.currentUser
-                if (currentUser != null) {
-                    val task = hashMapOf(
-                        "title" to title,
-                        "description" to description,
-                        "tag" to tag,
-                        "priority" to priority,
-                        "dueDate" to dateTime
-                    )
-                    val userId = currentUser.uid
-                    firestore.collection("users").document(userId).collection("tasks")
-                        .add(task)
-                        .addOnSuccessListener { documentReference ->
-                            val taskId = documentReference.id
-                            val updatedTask = task + ("taskId" to taskId)
-                            firestore.collection("users").document(userId).collection("tasks")
-                                .document(taskId)
-                                .set(updatedTask)
-                                .addOnSuccessListener {
-                                    Toast.makeText(this, "Task added successfully!", Toast.LENGTH_SHORT).show()
-                                    bottomSheetDialog.dismiss()
-                                    loadFragment(HomeFragment())
+            if (title.isNotEmpty()) {
+                if (description.isNotEmpty()) {
+                    if (dateTime.isNotEmpty()) {
+                        if (tag.isNotEmpty()) {
+                            if(priority != 0){
+                                val currentUser = auth.currentUser
+                                if (currentUser != null){
+                                    val task = hashMapOf(
+                                        "title" to title,
+                                        "description" to description,
+                                        "tag" to tag,
+                                        "priority" to priority,
+                                        "state" to state,
+                                        "dueDate" to dateTime
+                                    )
+
+                                    val userId = currentUser.uid
+                                    val db = FirebaseFirestore.getInstance()
+                                    // Reference to a collection and add the data
+                                    db.collection("users").document(userId).collection("tasks")
+                                        .add(task)
+                                        .addOnSuccessListener { documentReference ->
+                                            val taskId = documentReference.id
+                                            val updatedTask = hashMapOf(
+                                                "title" to title,
+                                                "description" to description,
+                                                "tag" to tag,
+                                                "priority" to priority,
+                                                "dueDate" to dateTime,
+                                                "state" to state,
+                                                "taskId" to taskId
+                                            )
+                                            db.collection("users").document(userId).collection("tasks")
+                                                .document(taskId)
+                                                .set(updatedTask)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(this, "Task added with ID: $taskId", Toast.LENGTH_SHORT).show()
+                                                    bottomSheetDialog.dismiss()  // Close the dialog
+                                                    loadFragment(HomeFragment())
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(this, "Error updating task with ID: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    Log.d("FragmentDebug", e.message.toString())
+                                                }
+                                            Toast.makeText(this, "Task added with ID: ${documentReference.id}", Toast.LENGTH_SHORT).show()
+                                            bottomSheetDialog.dismiss()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            // Handle failure
+                                            Toast.makeText(this, "Error adding task: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            Log.d("FragmentDebug", e.message.toString())
+                                        }
                                 }
-                                .addOnFailureListener { e ->
-                                    Log.e("FragmentActivity", "Error updating task: ${e.message}")
-                                }
+                            }else{
+                                Toast.makeText(this, "Please select priority", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        } else {
+                            Toast.makeText(this, "Please select a tag", Toast.LENGTH_SHORT)
+                                .show()
                         }
-                        .addOnFailureListener { e ->
-                            Log.e("FragmentActivity", "Error adding task: ${e.message}")
-                        }
+                    } else {
+                        Toast.makeText(this, "Please enter a date", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Please enter a task description", Toast.LENGTH_SHORT)
+                        .show()
+
                 }
             } else {
-                Toast.makeText(this, "Please fill out all fields.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter a task title", Toast.LENGTH_SHORT).show()
             }
         }
-
+        // Show the dialog
         bottomSheetDialog.show()
     }
 
-    private fun showCalendarAndTimePicker(onDateTimeSelected: (String) -> Unit) {
-        val calendar = Calendar.getInstance()
-        val datePickerDialog = DatePickerDialog(
-            this, { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth)
-                showTimePicker(calendar) { dateTime ->
-                    onDateTimeSelected(dateTime)
-                }
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePickerDialog.show()
-    }
-
-    private fun showTimePicker(calendar: Calendar, onTimeSelected: (String) -> Unit) {
-        val timePickerDialog = TimePickerDialog(
-            this, { _, hourOfDay, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendar.set(Calendar.MINUTE, minute)
-                val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-                val formattedDateTime = dateTimeFormat.format(calendar.time)
-                onTimeSelected(formattedDateTime)
-            },
-            calendar.get(Calendar.HOUR_OF_DAY),
-            calendar.get(Calendar.MINUTE),
-            true
-        )
-        timePickerDialog.show()
-    }
-
+//    This made me go clinically insane
     private fun showTagPopup(onTagSelected: (String) -> Unit) {
+        var selectedTag: String = ""  // Store selected tag
+
+        // Inflate the custom layout for the priority dialog
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_tag, null)
-        val alertDialog = AlertDialog.Builder(this).setView(dialogView).create()
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
         val priorityGrid = dialogView.findViewById<GridLayout>(R.id.priorityGrid)
         val taskCategories = listOf("University", "Work", "Home", "Fitness", "Shopping", "Meetings", "Errands", "Friends", "Family", "Others")
-
         for (category in taskCategories) {
-            val button = Button(this).apply {
-                text = category
-                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                setOnClickListener {
-                    onTagSelected(category)
-                    alertDialog.dismiss()
-                }
+            val button = Button(this)
+            button.text = category
+            button.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
+            button.setOnClickListener {
+                selectedTag = category
+                Toast.makeText(this, "Tag selected: $category", Toast.LENGTH_SHORT).show()
             }
             priorityGrid.addView(button)
         }
 
-        dialogView.findViewById<Button>(R.id.cancelButton)?.setOnClickListener { alertDialog.dismiss() }
+        // Handle Cancel button
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+        cancelButton.setOnClickListener {
+            alertDialog.dismiss()  // Dismiss the dialog
+        }
+
+        // Handle Save button
+        val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
+        saveButton.setOnClickListener {
+            if (selectedTag.isNotEmpty()) {
+                // Return the selected priority via the callback
+                onTagSelected(selectedTag)
+                alertDialog.dismiss()  // Dismiss the dialog
+            } else {
+                // Show a message if no priority is selected
+                Toast.makeText(this, "Please select a tag", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Show the dialog
         alertDialog.show()
     }
 
     private fun showPriorityPopup(onPrioritySelected: (Int) -> Unit) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_priority, null)
-        val alertDialog = AlertDialog.Builder(this).setView(dialogView).create()
+        var selectedPriority: Int = -1  // Store selected priority
 
+        // Inflate the custom layout for the priority dialog
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_priority, null)
+
+        // Create the AlertDialog
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(true) // Disable dismiss on outside touch
+            .create()
+
+        // Get references to buttons in the dialog layout
         val priorityButtons = listOf(
             dialogView.findViewById<Button>(R.id.priority1),
             dialogView.findViewById<Button>(R.id.priority2),
@@ -253,21 +387,91 @@ class FragmentActivity : AppCompatActivity() {
             dialogView.findViewById<Button>(R.id.priority4),
             dialogView.findViewById<Button>(R.id.priority5),
             dialogView.findViewById<Button>(R.id.priority6),
-
             dialogView.findViewById<Button>(R.id.priority7),
             dialogView.findViewById<Button>(R.id.priority8),
             dialogView.findViewById<Button>(R.id.priority9),
             dialogView.findViewById<Button>(R.id.priority10)
         )
 
+        // Handle priority button clicks
         priorityButtons.forEachIndexed { index, button ->
             button.setOnClickListener {
-                onPrioritySelected(index + 1)
-                alertDialog.dismiss()
+                selectedPriority = index + 1  // Priority 1-10 based on button click
+                // Optionally highlight the selected button (not required for functionality)
+                Toast.makeText(this, "Priority selected: $selectedPriority", Toast.LENGTH_SHORT).show()
             }
         }
 
-        dialogView.findViewById<Button>(R.id.cancelButton)?.setOnClickListener { alertDialog.dismiss() }
+        // Handle Cancel button
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+        cancelButton.setOnClickListener {
+            alertDialog.dismiss()  // Dismiss the dialog
+        }
+
+        // Handle Save button
+        val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
+        saveButton.setOnClickListener {
+            if (selectedPriority != -1) {
+                // Return the selected priority via the callback
+                onPrioritySelected(selectedPriority)
+                alertDialog.dismiss()  // Dismiss the dialog
+            } else {
+                // Show a message if no priority is selected
+                Toast.makeText(this, "Please select a priority", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Show the dialog
+        alertDialog.show()
+    }
+
+    private fun showStatePopup(onStateSelected: (String) -> Unit){
+        var selectedState: String = ""
+
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_state, null)
+
+        // Create the AlertDialog
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(true) // Disable dismiss on outside touch
+            .create()
+
+        val priorityGrid = dialogView.findViewById<GridLayout>(R.id.priorityGrid)
+        val taskStates = listOf("unfinished", "wip", "finished")
+        for (state in taskStates) {
+            val button = Button(this)
+            button.text = state
+            button.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
+            button.setOnClickListener {
+                selectedState = state
+                Toast.makeText(this, "State selected: $state", Toast.LENGTH_SHORT).show()
+            }
+            priorityGrid.addView(button)
+        }
+
+        // Handle Cancel button
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+        cancelButton.setOnClickListener {
+            alertDialog.dismiss()  // Dismiss the dialog
+        }
+
+        // Handle Save button
+        val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
+        saveButton.setOnClickListener {
+            if (selectedState.isNotEmpty()) {
+                // Return the selected priority via the callback
+                onStateSelected(selectedState)
+                alertDialog.dismiss()  // Dismiss the dialog
+            } else {
+                // Show a message if no priority is selected
+                Toast.makeText(this, "Please select a state", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Show the dialog
         alertDialog.show()
     }
 
@@ -277,4 +481,5 @@ class FragmentActivity : AppCompatActivity() {
             commit()
         }
     }
+
 }
