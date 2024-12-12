@@ -10,18 +10,20 @@
     tools:context=".Step3">
 
     <!-- Ilustrasi Gambar di Slide -->
+
+    <!-- Judul -->
     <ImageView
         android:id="@+id/onboarding_image"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="168dp"
         android:contentDescription="Onboarding Image"
         android:src="@drawable/home_work"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Judul -->
     <TextView
         android:id="@+id/onboarding_title"
         android:layout_width="wrap_content"

@@ -17,11 +17,14 @@
 
     <!-- Create Account Button -->
 
+
+    <!-- Ilustrasi Gambar di Slide -->
+
     <TextView
         android:id="@+id/welcome_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="136dp"
+        android:layout_marginTop="168dp"
         android:text="Welcome to CreDo"
         android:textColor="@android:color/white"
         android:textSize="24sp"
@@ -30,9 +33,6 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-    <!-- Ilustrasi Gambar di Slide -->
 
     <TextView
         android:id="@+id/welcome_description"
@@ -50,7 +50,7 @@
         android:id="@+id/onboarding_image"
         android:layout_width="302dp"
         android:layout_height="522dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="76dp"
         android:contentDescription="Onboarding Image"
         android:src="@drawable/apps"
         app:layout_constraintEnd_toEndOf="parent"
