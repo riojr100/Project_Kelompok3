@@ -42,12 +42,13 @@ class ProfileFragment : Fragment() {
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        // Initialize "Task Left" to 0
+        // Initialize "Task Left" and "Tasks Finished"
         binding.taskLeftTextView.text = "0 Task(s) left"
+        binding.tasksFinishedTextView.text = "0 Task(s) finished"
 
         // Load user profile and task data
         loadUserProfile()
-        setupRealtimeTaskLeftListener()
+        setupRealtimeTaskListeners()
 
         // Set up button listeners
         setupMenu()
@@ -102,7 +103,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setupRealtimeTaskLeftListener() {
+    private fun setupRealtimeTaskListeners() {
         val user = auth.currentUser
         if (user != null) {
             val tasksRef = firestore.collection("users")
@@ -119,13 +120,15 @@ class ProfileFragment : Fragment() {
                 }
 
                 if (querySnapshot != null) {
-                    val taskCount = querySnapshot.size()
-                    binding.taskLeftTextView.text = "$taskCount Task(s) left"
+                    val totalTasks = querySnapshot.size()
+                    val finishedTasks = querySnapshot.filter { it.getString("state") == "finished" }.size
+
+                    binding.taskLeftTextView.text = "$totalTasks Task(s) left"
+                    binding.tasksFinishedTextView.text = "$finishedTasks Task(s) finished"
                 }
             }
         }
     }
-
 
     private fun setupMenu() {
         binding.appSettings.setOnClickListener {

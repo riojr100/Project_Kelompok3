@@ -41,6 +41,7 @@
             android:gravity="center"
             android:layout_marginBottom="24dp">
 
+            <!-- Task Left -->
             <TextView
                 android:id="@+id/taskLeftTextView"
                 android:layout_width="0dp"
@@ -49,12 +50,13 @@
                 android:textColor="@android:color/white"
                 android:gravity="center" />
 
+            <!-- Tasks Finished -->
             <TextView
-                android:id="@+id/taskDoneTextView"
+                android:id="@+id/tasksFinishedTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="5 Task done"
+                android:text="0 Task(s) Done"
                 android:textColor="@android:color/white"
                 android:gravity="center"
                 android:layout_marginStart="16dp" />
@@ -101,7 +103,7 @@
                 android:contentDescription="Arrow" />
         </LinearLayout>
 
-        <!-- Settings Section Header -->
+        <!-- Account Settings Section -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -132,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="16dp"
-                android:text="Change account name"
+                android:text="Change Account Name"
                 android:textColor="@android:color/white" />
 
             <ImageView
@@ -163,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="16dp"
-                android:text="Change account password"
+                android:text="Change Account Password"
                 android:textColor="@android:color/white" />
 
             <ImageView
@@ -194,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="16dp"
-                android:text="Change account image"
+                android:text="Change Account Image"
                 android:textColor="@android:color/white" />
 
             <ImageView
@@ -203,16 +205,6 @@
                 android:src="@drawable/ic_arrow_forward"
                 android:contentDescription="Arrow" />
         </LinearLayout>
-
-        <!-- CreDo Section Header -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="CreDo"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp" />
 
         <!-- About Us -->
         <LinearLayout
