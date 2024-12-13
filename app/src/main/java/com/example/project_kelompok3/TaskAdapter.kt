@@ -17,6 +17,10 @@ class TaskAdapter(private val tasks: MutableList<Task>, private val listener: Ho
     interface TaskAdapterListener {
         fun showSelectionDialog()
         fun hideSelectionDialog()
+
+        fun showEditDialog()
+//        fun showEditDialog(id : String, title: String, desc: String, due: String, tag: String, priority: String, state: String)
+//        fun hideEditDialog()
     }
 
     private val selectedTasks = mutableSetOf<Int>()
@@ -28,6 +32,13 @@ class TaskAdapter(private val tasks: MutableList<Task>, private val listener: Ho
         val taskDueDate: TextView = view.findViewById(R.id.task_due_date)
         val taskUnchecked: ImageView = view.findViewById(R.id.unchecked)
         val taskChecked: ImageView = view.findViewById(R.id.checked)
+
+//        Hidden Shits
+//        val taskId: TextView = view.findViewById(R.id.task_id)
+//        val taskDescription: TextView = view.findViewById(R.id.description)
+//        val taskTag: TextView = view.findViewById(R.id.task_tag)
+//        val taskPriority: TextView = view.findViewById(R.id.task_priority)
+//        val taskState: TextView = view.findViewById(R.id.task_state)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -40,6 +51,7 @@ class TaskAdapter(private val tasks: MutableList<Task>, private val listener: Ho
         val task = tasks[position]
         holder.taskTitle.text = task.title
         holder.taskDueDate.text = task.dueDate
+
 
         if (isSelectionOn) {
             holder.taskUnchecked.visibility = View.VISIBLE
@@ -80,6 +92,8 @@ class TaskAdapter(private val tasks: MutableList<Task>, private val listener: Ho
                 }
             } else {
                 // Handle regular click behavior if necessary
+//                id : String, title: String, desc: String, due: String, tag: String, priority: String, state: String
+                listener.showEditDialog(task.taskId, task.title, task.description, task.dueDate, task.tag, task.priority, task.state)
             }
         }
     }

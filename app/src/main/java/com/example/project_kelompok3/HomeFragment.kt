@@ -88,8 +88,13 @@ class HomeFragment : Fragment() {
                     hideEmptyViews()  // Hide empty task views
                     for (document in documents) {
                         val task = Task(
+
                             taskId = document.getString("taskId")?: "No ID",
                             title = document.getString("title") ?: "No Title",
+                            description = document.getString("description") ?: "No Desc",
+                            priority = document.getLong("priority")?.toInt() ?: -1,
+                            state = document.getString("state") ?: "No State",
+                            tag = document.getString("tag") ?: "No Tag",
                             dueDate = document.getString("dueDate") ?: "No Date"
                         )
                         tasks.add(task)
@@ -103,6 +108,15 @@ class HomeFragment : Fragment() {
                 Log.e("HomeFragment", "Error getting tasks: ", exception)
                 showEmptyViews()
             }
+    }
+
+    fun showEditDialog(id : String, title: String, desc: String, due: String, tag: String, priority: Int, state: String){
+        val editDialog = TaskEditDialog.newInstance(id, title, desc, due, tag, priority, state)
+        editDialog.show(parentFragmentManager, "TaskEditDialog")
+    }
+
+    fun hideEditDialog(){
+
     }
 
     fun showSelectionDialog(){

@@ -221,6 +221,8 @@ class ProfileFragment : Fragment() {
                     val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     sharedPreferences.edit().remove("session_token").apply()
 
+                    auth.signOut()
+
                     val intent = Intent(requireContext(), LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

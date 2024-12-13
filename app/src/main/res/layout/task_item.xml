@@ -56,6 +56,39 @@
                 android:text="Today at 16:45"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
+
+<!--            <TextView-->
+<!--                android:id="@+id/task_id"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/description"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                />-->
+<!--            <TextView-->
+<!--                android:id="@+id/task_tag"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                />-->
+<!--            <TextView-->
+<!--                android:id="@+id/task_priority"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                />-->
+<!--            <TextView-->
+<!--                android:id="@+id/task_state"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                />-->
+
         </LinearLayout>
 
     </LinearLayout>
