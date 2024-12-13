@@ -76,18 +76,24 @@ class HomeFragment : Fragment() {
         return view
     }
 
+    // Function to get tasks from Firestore for the current user
     private fun getTasksFromFirestore(userId: String) {
+        // Clear the task list to avoid duplicates
         tasks.clear()
 
         db.collection("users").document(userId).collection("tasks")
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    hideEmptyViews()
+                    hideEmptyViews()  // Hide empty task views
                     for (document in documents) {
                         val task = Task(
                             taskId = document.getString("taskId") ?: "No ID",
                             title = document.getString("title") ?: "No Title",
+                            description = document.getString("description") ?: "No Desc",
+                            priority = document.getLong("priority")?.toInt() ?: -1,
+                            state = document.getString("state") ?: "No State",
+                            tag = document.getString("tag") ?: "No Tag",
                             dueDate = document.getString("dueDate") ?: "No Date"
                         )
                         tasks.add(task)
@@ -110,11 +116,19 @@ class HomeFragment : Fragment() {
         calendarFragment?.setNotesData(tasksByDate)
     }
 
-    fun showSelectionDialog() {
-        selectionDialog.visibility = View.VISIBLE
+    fun showEditDialog(id : String, title: String, desc: String, due: String, tag: String, priority: Int, state: String){
+        val editDialog = TaskEditDialog.newInstance(id, title, desc, due, tag, priority, state)
+        editDialog.show(parentFragmentManager, "TaskEditDialog")
     }
 
-    fun hideSelectionDialog() {
+    fun hideEditDialog(){
+
+    }
+
+    fun showSelectionDialog(){
+        selectionDialog.visibility = View.VISIBLE
+    }
+    fun hideSelectionDialog(){
         selectionDialog.visibility = View.GONE
     }
 
@@ -128,5 +142,5 @@ class HomeFragment : Fragment() {
         emptyTaskImage.visibility = View.VISIBLE
         emptyTaskMessage.visibility = View.VISIBLE
         taskList.visibility = View.GONE
-        }
+    }
 }

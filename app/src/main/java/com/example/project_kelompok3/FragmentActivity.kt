@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log
 
 class FragmentActivity : AppCompatActivity() {
 
@@ -180,11 +181,6 @@ class FragmentActivity : AppCompatActivity() {
         // Show the TimePicker dialog
         timePickerDialog.show()
     }
-
-    private fun showEditTaskDialog(){
-
-    }
-
     private fun showAddTaskDialog() {
         // Create the BottomSheetDialog
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -479,6 +475,23 @@ class FragmentActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.flFragment, fragment)
             commit()
+        }
+    }
+
+    public fun callThisFun(){
+//        // Create the BottomSheetDialog
+//        val bottomSheetDialog = BottomSheetDialog(this)
+//
+//        // Inflate the custom layout for the dialog
+//        val dialogView = LayoutInflater.from(this).inflate(R.layout.task_edit_dialog, null)
+//
+//        // Set the custom layout to the dialog
+//        bottomSheetDialog.setContentView(dialogView)
+    }
+    companion object {
+
+        fun showEditTaskDialog(taskId: String, title: String, description: String, dueDate: String, tag: String, priority: Int, state: String) {
+            FragmentActivity().callThisFun()
         }
     }
 
