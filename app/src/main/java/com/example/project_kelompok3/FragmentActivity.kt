@@ -478,21 +478,4 @@ class FragmentActivity : AppCompatActivity() {
         }
     }
 
-    public fun callThisFun(){
-//        // Create the BottomSheetDialog
-//        val bottomSheetDialog = BottomSheetDialog(this)
-//
-//        // Inflate the custom layout for the dialog
-//        val dialogView = LayoutInflater.from(this).inflate(R.layout.task_edit_dialog, null)
-//
-//        // Set the custom layout to the dialog
-//        bottomSheetDialog.setContentView(dialogView)
-    }
-    companion object {
-
-        fun showEditTaskDialog(taskId: String, title: String, description: String, dueDate: String, tag: String, priority: Int, state: String) {
-            FragmentActivity().callThisFun()
-        }
-    }
-
 }

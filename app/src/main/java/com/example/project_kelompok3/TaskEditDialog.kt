@@ -145,8 +145,11 @@ class TaskEditDialog : BottomSheetDialogFragment() {
                     "state" to state
                 )
                 userDocRef.update(updates).addOnSuccessListener {
-//                    Log.d("DBUpdate","Database Successfully Updated")
                     Toast.makeText(requireContext(), "Database Successfully Updated", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.beginTransaction().apply {
+                        replace(R.id.flFragment, HomeFragment())
+                        commit()
+                    }
                     dismiss()
                 }.addOnFailureListener{ e ->
                     Log.e("DBError", "Database Failed to Update")
