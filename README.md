@@ -4,5 +4,9 @@ Kelompok 3:
 3. Kenndy Susio (75031)
 4. Rio Joan Rinaldo (78315)
 
-video 
+Video UTS:
 https://drive.google.com/file/d/1vtSVTeSCYE_NgCBiKCLwsdQJ_saZLxJf/view?usp=sharing
+
+Video UAS:
+https://drive.google.com/file/d/1rCS5n1mBG-d2EbDkFoRoXVLcrqdsVqF7/view?usp=sharing
+
